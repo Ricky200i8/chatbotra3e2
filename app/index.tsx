@@ -3,7 +3,8 @@ import Button from "@/components/button";
 import PromptText from "@/components/prompt-text";
 import axios from "axios";
 import { useState } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
+import { Alert, KeyboardAvoidingView, ScrollView, Text, View, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const [value, setValue] = useState("");
@@ -51,26 +52,35 @@ export default function Index() {
   };
 
   return (
-    <KeyboardAvoidingView className="w-screen h-screen bg-neutral-900">
-      <ScrollView className="w-full h-full p-4">
-        <PromptText
-          onChangeText={(text) => setValue(text)}
-          value={value}
-        />
+    <SafeAreaView className="w-screen h-screen bg-neutral-900">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="flex-1"
+      >
+        <ScrollView className="w-full h-full p-4">
+          <Text className="text-slate-400 text-4xl font-bold mb-4 text-center">
+            CHATBOT IA
+          </Text>
 
-        <Button
-          isLoading={isLoading}
-          onPress={() => consultarGemini(value)}
-          title="Enviar pregunta"
-        />
+          <PromptText
+            onChangeText={(text) => setValue(text)}
+            value={value}
+          />
 
-        {response ? (
-          <View className="mt-5 bg-neutral-800 rounded-xl p-4">
-            <Text className="text-white font-semibold mb-2">🤖 Respuesta del chatbot:</Text>
-            <Text className="text-gray-200">{response}</Text>
-          </View>
-        ) : null}
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <Button
+            isLoading={isLoading}
+            onPress={() => consultarGemini(value)}
+            title="Enviar pregunta"
+          />
+
+          {response ? (
+            <View className="mt-5 bg-neutral-800 rounded-xl p-4">
+              <Text className="text-white font-semibold mb-2">🤖 Respuesta del chatbot:</Text>
+              <Text className="text-gray-200">{response}</Text>
+            </View>
+          ) : null}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
